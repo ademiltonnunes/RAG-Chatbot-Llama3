@@ -3,3 +3,4 @@ docs/
 uploads/
 venv
 .env
+__pycache__/
