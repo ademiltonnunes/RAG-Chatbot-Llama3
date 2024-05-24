@@ -77,9 +77,17 @@ Follow these steps to set up your project with a virtual environment:
    pip install -r requirements.txt
    ```
    - Install ffmpeg:
-       MacOs:
+       - MacOs:
          ```bash
          brew install ffmpeg
+         ```
+       - Linux:
+         ```bash
+         sudo apt install ffmpeg
+         ```
+         - Windows:
+         ```bash
+         Download the ffmpeg (https://ffmpeg.org/download) and add the bin folder inside the ffmpeg directory to your system's PATH environment variable:
          ```
 
 
