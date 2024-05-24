@@ -76,6 +76,12 @@ Follow these steps to set up your project with a virtual environment:
    ```bash
    pip install -r requirements.txt
    ```
+   - Install ffmpeg:
+       MacOs:
+         ```bash
+         brew install ffmpeg
+         ```
+
 
 8. Add your [API key](https://beta.openai.com/account/api-keys) to the `.env` file.
 
