@@ -1,4 +1,5 @@
-/audios/
-/docs/
-/uploads/
+audios/
+docs/
+uploads/
+venv
 .env
