@@ -31,7 +31,7 @@ To interact with documents loaded into the system, the following techniques were
 - **User Question Techniques**:
   - **Moderation**: OpenAI's Moderation tool ensures responsible usage and compliance with policies.
   - **Prompt Injection Prevention**: Mechanisms are in place to prevent users from injecting inappropriate prompts or revealing sensitive information.
-- **Integration with the ChatGPT OpenAI GPT-3.5 model**:  OpenAI GPT-3.5 model is used as a Large Language Model (LLM).
+- **Integration with the Llama 3**:  Llama 3 8B is used as a Large Language Model (LLM).
 - **User interface built with HTML and CSS** for easy interaction.
 - **LangChain** for loading documents, creating a vector store, and answering questions.
 
@@ -39,7 +39,7 @@ To interact with documents loaded into the system, the following techniques were
 
 - Flask: Web framework for efficient application implementation.
 - HTML and CSS: Creating a user-friendly and intuitive interface.
-- ChatGPT OpenAI GPT-3.5: Advanced language model for the base LLM.
+- Llama3 8B: Advanced language model for the base LLM.
 - LangChain for loading documents and answering questions by semantic search in a conversational Memory Buffer.
 
 ## Getting Started
@@ -55,7 +55,7 @@ Follow these steps to set up your project with a virtual environment:
 
 3.  Navigate into the project directory
       ```bash
-        cd ChatGPTAPI/Chatbot-From-Files
+        cd custommer-support-system-llama3
 
 5. Create a new virtual environment:
 
