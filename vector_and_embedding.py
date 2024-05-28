@@ -11,9 +11,10 @@ from langchain_community.document_loaders import PyPDFLoader
 from langchain_community.document_loaders import WebBaseLoader
 
 # #Youtube
-from langchain_community.document_loaders.generic import GenericLoader
-from langchain_community.document_loaders.parsers.audio import OpenAIWhisperParser
-from langchain_community.document_loaders import YoutubeAudioLoader
+# from langchain_community.document_loaders.generic import GenericLoader
+# from langchain_community.document_loaders.parsers.audio import OpenAIWhisperParser
+# from langchain_community.document_loaders import YoutubeAudioLoader
+from langchain_community.document_loaders import YoutubeLoader
 
 #Split document
 from langchain.text_splitter import RecursiveCharacterTextSplitter
@@ -47,12 +48,9 @@ class LangChaing:
 
     def __load_youtube(self, url:str):
 
-
-        loader = GenericLoader(
-            YoutubeAudioLoader([url],persist_youtube_audio),
-            OpenAIWhisperParser()
-        )
+        loader = YoutubeLoader.from_youtube_url(url, add_video_info=False)
         return loader.load()
+
 
     def __split_content(self, docs):
 
@@ -111,22 +109,22 @@ class LangChaing:
         else:
             return False
 
-    # def upload_youtube(self, youtube):      
+    def upload_youtube(self, youtube):      
 
-    #     docs = []       
-    #     docs.extend(self.__load_youtube(youtube))
+        docs = []       
+        docs.extend(self.__load_youtube(youtube))
         
-    #     if len(docs) > 0:
+        if len(docs) > 0:
             
-    #         #Split chunks
-    #         chunks = self.__split_content(docs)
+            #Split chunks
+            chunks = self.__split_content(docs)
             
-    #         #Vectorstores
-    #         self.__create_vectorstore(chunks)    
+            #Vectorstores
+            self.__create_vectorstore(chunks)    
 
-    #         return True
-    #     else:
-    #         return False
+            return True
+        else:
+            return False
     
     def upload_all_files(self):
         #delete vectore
@@ -182,9 +180,3 @@ class LangChaing:
             directory_path = f'./{path}'
             shutil.rmtree(directory_path)
 
-# def main() -> None:
-#     lc = LangChaing()
-#     # created = lc.upload_file('LangChain/SFBU_Customer_Support_System/uploads/pdf')
-    
-# if __name__ == '__main__':
-#     main()

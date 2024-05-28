@@ -199,42 +199,42 @@ def delete_url(file_name = url_file_name):
     except Exception as e:
          return jsonify({'error': str(e)})
 
-# @app.route('/upload_youtube', methods=['POST'])
-# def upload_youtube(file_name = youtube_file_name):
-#     try:     
-#         data = request.get_json()
-#         youtube = data.get('youtube')
+@app.route('/upload_youtube', methods=['POST'])
+def upload_youtube(file_name = youtube_file_name):
+    try:     
+        data = request.get_json()
+        youtube = data.get('youtube')
 
-#         if not youtube:
-#             return jsonify({'error': 'No youtube link uploaded'})
+        if not youtube:
+            return jsonify({'error': 'No youtube link uploaded'})
 
-#         if not os.path.exists(app.config['UPLOAD_YOUTUBE']):
-#             os.makedirs(app.config['UPLOAD_YOUTUBE'])
+        if not os.path.exists(app.config['UPLOAD_YOUTUBE']):
+            os.makedirs(app.config['UPLOAD_YOUTUBE'])
         
-#         file_path = os.path.join(app.config['UPLOAD_YOUTUBE'], file_name)
+        file_path = os.path.join(app.config['UPLOAD_YOUTUBE'], file_name)
 
-#         # Check if the URL is already in the file
-#         with open(file_path, 'a+') as file:
-#             file.seek(0)
-#             existing_youtubes = [line.strip() for line in file.readlines()]
+        # Check if the URL is already in the file
+        with open(file_path, 'a+') as file:
+            file.seek(0)
+            existing_youtubes = [line.strip() for line in file.readlines()]
 
-#         if youtube in existing_youtubes:
-#             return jsonify({'error': 'Youtube link already exists'})
+        if youtube in existing_youtubes:
+            return jsonify({'error': 'Youtube link already exists'})
         
-#         #Create a vectorstore
-#         created = lc.upload_youtube(youtube) 
+        #Create a vectorstore
+        created = lc.upload_youtube(youtube) 
 
-#         if created == False:
-#             return jsonify({'error': "It wasn't possible to use this url to ask questions"})
+        if created == False:
+            return jsonify({'error': "It wasn't possible to use this url to ask questions"})
 
-#         # Save the URL to the file
-#         with open(file_path, 'a') as file:
-#             file.write(youtube + '\n')  
+        # Save the URL to the file
+        with open(file_path, 'a') as file:
+            file.write(youtube + '\n')  
 
-#         return jsonify({'message': f'Youtube link uploaded successfully: {youtube}'})
-#     except Exception as e:        
-#         print(f"Unexpected Error: {e}")
-#         return jsonify({'error': f"It wasn't possible to use this Youtube link to ask questions: {e}"})
+        return jsonify({'message': f'Youtube link uploaded successfully: {youtube}'})
+    except Exception as e:        
+        print(f"Unexpected Error: {e}")
+        return jsonify({'error': f"It wasn't possible to use this Youtube link to ask questions: {e}"})
 
 @app.route('/youtubes', methods=['GET'])
 def get_youtubes(file_name = youtube_file_name):  

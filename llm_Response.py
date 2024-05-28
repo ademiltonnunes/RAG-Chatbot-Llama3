@@ -18,7 +18,7 @@ from langchain.memory import ConversationBufferMemory
 from langchain_community.llms import Ollama
 
 # libraries imported for translation
-from deep_translator import GoogleTranslator, single_detection, batch_detection
+from deep_translator import GoogleTranslator, single_detection
 
 from dotenv import load_dotenv, find_dotenv
 _ = load_dotenv(find_dotenv()) # read local .env file
