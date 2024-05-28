@@ -1,9 +1,9 @@
 from flask import Flask, render_template, request, jsonify, send_file
 from werkzeug.utils import secure_filename
 from vector_and_embedding import LangChaing
-from speechRecognation import SpeechRecognation
+# from speechRecognation import SpeechRecognation
 from llm_Response import LLMResponse
-from webCrawling import Crawl
+# from webCrawling import Crawl
 import os
 
 app = Flask(__name__)
@@ -25,9 +25,9 @@ ALLOWED_EXTENSIONS = {'pdf'}
 ALLOWED_AUDIO = {'mp3', 'wav'}
 
 lc = LangChaing()
-sr = SpeechRecognation()
+# sr = SpeechRecognation()
 llm = LLMResponse()
-c = Crawl()
+# c = Crawl()
 
 @app.route('/')
 def home():
@@ -36,22 +36,6 @@ def home():
 @app.route('/files_page')
 def files_page():
     return render_template('files_page.html')
-
-@app.route('/submit_Question', methods=['POST'])
-def submit_answer():
-    try:
-        data = request.get_json()
-        question = data.get('question')
-        includeAudio = data.get('includeAudio')
-
-        # Pass the user email to the chat method
-        response = llm.chat(question, includeAudio)
-        answer = response['answer']
-
-        return jsonify({'response': answer})
-    except Exception as e:
-        print(f"Unexpected Error: {e}")
-        return jsonify({'error': f"Can't answer questions: {e}"})
 
 @app.route('/upload_pdf', methods=['POST'])
 def upload_pdf():
@@ -215,42 +199,42 @@ def delete_url(file_name = url_file_name):
     except Exception as e:
          return jsonify({'error': str(e)})
 
-@app.route('/upload_youtube', methods=['POST'])
-def upload_youtube(file_name = youtube_file_name):
-    try:     
-        data = request.get_json()
-        youtube = data.get('youtube')
+# @app.route('/upload_youtube', methods=['POST'])
+# def upload_youtube(file_name = youtube_file_name):
+#     try:     
+#         data = request.get_json()
+#         youtube = data.get('youtube')
 
-        if not youtube:
-            return jsonify({'error': 'No youtube link uploaded'})
+#         if not youtube:
+#             return jsonify({'error': 'No youtube link uploaded'})
 
-        if not os.path.exists(app.config['UPLOAD_YOUTUBE']):
-            os.makedirs(app.config['UPLOAD_YOUTUBE'])
+#         if not os.path.exists(app.config['UPLOAD_YOUTUBE']):
+#             os.makedirs(app.config['UPLOAD_YOUTUBE'])
         
-        file_path = os.path.join(app.config['UPLOAD_YOUTUBE'], file_name)
+#         file_path = os.path.join(app.config['UPLOAD_YOUTUBE'], file_name)
 
-        # Check if the URL is already in the file
-        with open(file_path, 'a+') as file:
-            file.seek(0)
-            existing_youtubes = [line.strip() for line in file.readlines()]
+#         # Check if the URL is already in the file
+#         with open(file_path, 'a+') as file:
+#             file.seek(0)
+#             existing_youtubes = [line.strip() for line in file.readlines()]
 
-        if youtube in existing_youtubes:
-            return jsonify({'error': 'Youtube link already exists'})
+#         if youtube in existing_youtubes:
+#             return jsonify({'error': 'Youtube link already exists'})
         
-        #Create a vectorstore
-        created = lc.upload_youtube(youtube) 
+#         #Create a vectorstore
+#         created = lc.upload_youtube(youtube) 
 
-        if created == False:
-            return jsonify({'error': "It wasn't possible to use this url to ask questions"})
+#         if created == False:
+#             return jsonify({'error': "It wasn't possible to use this url to ask questions"})
 
-        # Save the URL to the file
-        with open(file_path, 'a') as file:
-            file.write(youtube + '\n')  
+#         # Save the URL to the file
+#         with open(file_path, 'a') as file:
+#             file.write(youtube + '\n')  
 
-        return jsonify({'message': f'Youtube link uploaded successfully: {youtube}'})
-    except Exception as e:        
-        print(f"Unexpected Error: {e}")
-        return jsonify({'error': f"It wasn't possible to use this Youtube link to ask questions: {e}"})
+#         return jsonify({'message': f'Youtube link uploaded successfully: {youtube}'})
+#     except Exception as e:        
+#         print(f"Unexpected Error: {e}")
+#         return jsonify({'error': f"It wasn't possible to use this Youtube link to ask questions: {e}"})
 
 @app.route('/youtubes', methods=['GET'])
 def get_youtubes(file_name = youtube_file_name):  
@@ -293,71 +277,87 @@ def delete_youtube(file_name = youtube_file_name):
     except Exception as e:
          return jsonify({'error': str(e)})
 
-@app.route('/upload-audio', methods=['POST'])
-def upload_audio():
+@app.route('/submit_Question', methods=['POST'])
+def submit_answer():
     try:
-        audio_file = request.files.get('audio', None)
-
-        # Check if an audio file was received
-        if audio_file is None:
-            return jsonify({'error': 'No audio file received'}), 400
-
-        # Check if the file has a valid extension
-        if not allowed_audio_file(audio_file.filename):
-            return jsonify({'error': 'Invalid audio file type'}), 400
-
-        # Save audio file
-        if not os.path.exists(app.config['AUDIO_FOLDER']):
-            os.makedirs(app.config['AUDIO_FOLDER'])
-
-        audio_path = os.path.join(app.config['AUDIO_FOLDER'], 'audio.mp3')
-        audio_file.save(audio_path)
-
-        #Change audio to text
-        transciption = sr.transcribe_audio(audio_path)
-
-        return jsonify({'transcription': transciption})
-    except Exception as e:
-        return jsonify({'error': str(e)}), 500
-
-def allowed_audio_file(filename):
-    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_AUDIO
-
-@app.route('/get_question_audio', methods=['POST'])
-def get_audio():
-    try:
-
         data = request.get_json()
-        # Get the audio text
-        text = data.get('text')
+        question = data.get('question')
+        includeAudio = data.get('includeAudio')
 
-        if text:
-            # Changing Text to audio
-            audio = sr.text_to_audio(text)
+        # Pass the user email to the chat method
+        response = llm.chat(question, includeAudio)
+        answer = response['answer']
 
-            # Create directory if it doesn't exist
-            if not os.path.exists(app.config['REPLY_FOLDER']):
-                os.makedirs(app.config['REPLY_FOLDER'])
-
-            # Audio Path
-            audio_path = os.path.join(app.config['REPLY_FOLDER'], 'reply.mp3')
-            
-            # Save audio
-            audio.save(audio_path)
-
-            # Return the audio file for download
-            return send_file(audio_path, as_attachment=True)
-        else:
-            return jsonify({'error': 'No text provided to transform into audio'}), 400
-
+        return jsonify({'response': answer})
     except Exception as e:
-        return jsonify({'error': str(e)}), 500
+        print(f"Unexpected Error: {e}")
+        return jsonify({'error': f"Can't answer questions: {e}"})
 
-@app.route('/update_page', methods=['GET'])
-def update_page():
-    #Removing chat from the memory
-    llm.chatbot = None
-    return jsonify({'message': 'Update Page'})
+# @app.route('/upload-audio', methods=['POST'])
+# def upload_audio():
+#     try:
+#         audio_file = request.files.get('audio', None)
+
+#         # Check if an audio file was received
+#         if audio_file is None:
+#             return jsonify({'error': 'No audio file received'}), 400
+
+#         # Check if the file has a valid extension
+#         if not allowed_audio_file(audio_file.filename):
+#             return jsonify({'error': 'Invalid audio file type'}), 400
+
+#         # Save audio file
+#         if not os.path.exists(app.config['AUDIO_FOLDER']):
+#             os.makedirs(app.config['AUDIO_FOLDER'])
+
+#         audio_path = os.path.join(app.config['AUDIO_FOLDER'], 'audio.mp3')
+#         audio_file.save(audio_path)
+
+#         #Change audio to text
+#         transciption = sr.transcribe_audio(audio_path)
+
+#         return jsonify({'transcription': transciption})
+#     except Exception as e:
+#         return jsonify({'error': str(e)}), 500
+
+# def allowed_audio_file(filename):
+#     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_AUDIO
+
+# @app.route('/get_question_audio', methods=['POST'])
+# def get_audio():
+#     try:
+
+#         data = request.get_json()
+#         # Get the audio text
+#         text = data.get('text')
+
+#         if text:
+#             # Changing Text to audio
+#             audio = sr.text_to_audio(text)
+
+#             # Create directory if it doesn't exist
+#             if not os.path.exists(app.config['REPLY_FOLDER']):
+#                 os.makedirs(app.config['REPLY_FOLDER'])
+
+#             # Audio Path
+#             audio_path = os.path.join(app.config['REPLY_FOLDER'], 'reply.mp3')
+            
+#             # Save audio
+#             audio.save(audio_path)
+
+#             # Return the audio file for download
+#             return send_file(audio_path, as_attachment=True)
+#         else:
+#             return jsonify({'error': 'No text provided to transform into audio'}), 400
+
+#     except Exception as e:
+#         return jsonify({'error': str(e)}), 500
+
+# @app.route('/update_page', methods=['GET'])
+# def update_page():
+#     #Removing chat from the memory
+#     llm.chatbot = None
+#     return jsonify({'message': 'Update Page'})
  
 if __name__ == '__main__':
     app.run(debug=True, port=5555)

@@ -1,38 +1,32 @@
 import os
-import openai
+# import openai
 import sys
 import time
 sys.path.append('../..')
 
 #PDF
-# from langchain.document_loaders import PyPDFLoader
 from langchain_community.document_loaders import PyPDFLoader
 
 #URLs
-# from langchain.document_loaders import WebBaseLoader
 from langchain_community.document_loaders import WebBaseLoader
 
-#Youtube
-# from langchain.document_loaders.generic import GenericLoader
-from langchain_community.document_loaders.generic import GenericLoader
-# from langchain.document_loaders.parsers import OpenAIWhisperParser
-from langchain_community.document_loaders.parsers.audio import OpenAIWhisperParser
-# from langchain.document_loaders.blob_loaders.youtube_audio import YoutubeAudioLoader
-from langchain_community.document_loaders import YoutubeAudioLoader
+# #Youtube
+# from langchain_community.document_loaders.generic import GenericLoader
+# from langchain_community.document_loaders.parsers.audio import OpenAIWhisperParser
+# from langchain_community.document_loaders import YoutubeAudioLoader
 
 #Split document
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 #Embedding
-# from langchain.embeddings.openai import OpenAIEmbeddings
-from langchain_community.embeddings import OpenAIEmbeddings
+from langchain_community.embeddings import OllamaEmbeddings
 #Vectorstores
 import shutil
-# from langchain.vectorstores import Chroma
 from langchain_community.vectorstores import Chroma
 
 from dotenv import load_dotenv, find_dotenv
 _ = load_dotenv(find_dotenv()) # read local .env file
-openai.api_key  = os.environ['OPENAI_API_KEY']
+model  = os.environ['MODEL']
+
 UPLOAD_FOLDER = 'uploads/pdf'
 UPLOAD_URL = 'uploads/url'
 UPLOAD_YOUTUBE = 'uploads/youtube'
@@ -51,14 +45,14 @@ class LangChaing:
         loader = WebBaseLoader(url)
         return loader.load()
 
-    def __load_youtube(self, url:str):
+    # def __load_youtube(self, url:str):
 
 
-        loader = GenericLoader(
-            YoutubeAudioLoader([url],persist_youtube_audio),
-            OpenAIWhisperParser()
-        )
-        return loader.load()
+    #     loader = GenericLoader(
+    #         YoutubeAudioLoader([url],persist_youtube_audio),
+    #         OpenAIWhisperParser()
+    #     )
+    #     return loader.load()
 
     def __split_content(self, docs):
 
@@ -71,7 +65,7 @@ class LangChaing:
 
     def __create_vectorstore(self, chunks):       
         #Create Indexes
-        embedding = OpenAIEmbeddings()
+        embedding = OllamaEmbeddings(model=model)
 
         vectordb = Chroma.from_documents(
             documents=chunks,
@@ -117,22 +111,22 @@ class LangChaing:
         else:
             return False
 
-    def upload_youtube(self, youtube):      
+    # def upload_youtube(self, youtube):      
 
-        docs = []       
-        docs.extend(self.__load_youtube(youtube))
+    #     docs = []       
+    #     docs.extend(self.__load_youtube(youtube))
         
-        if len(docs) > 0:
+    #     if len(docs) > 0:
             
-            #Split chunks
-            chunks = self.__split_content(docs)
+    #         #Split chunks
+    #         chunks = self.__split_content(docs)
             
-            #Vectorstores
-            self.__create_vectorstore(chunks)    
+    #         #Vectorstores
+    #         self.__create_vectorstore(chunks)    
 
-            return True
-        else:
-            return False
+    #         return True
+    #     else:
+    #         return False
     
     def upload_all_files(self):
         #delete vectore
