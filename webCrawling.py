@@ -3,13 +3,7 @@ import urllib.request
 from collections import deque
 from html.parser import HTMLParser
 from urllib.parse import urlparse
-import os
-import openai
 from vector_and_embedding import LangChaing
-
-from dotenv import load_dotenv, find_dotenv
-_ = load_dotenv(find_dotenv()) # read local .env file
-openai.api_key  = os.environ['OPENAI_API_KEY']
 
 lc = LangChaing()
 
@@ -109,7 +103,7 @@ class Crawl():
 
             try:
                 #Load url and save it to vectorstore
-                lc.upload_url(url, timer= True)            
+                lc.upload_url(url, timer= False)            
             except Exception as e:
                 print(f"Unable to parse page {url} {e}")
 

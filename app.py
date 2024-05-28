@@ -3,7 +3,7 @@ from werkzeug.utils import secure_filename
 from vector_and_embedding import LangChaing
 # from speechRecognation import SpeechRecognation
 from llm_Response import LLMResponse
-# from webCrawling import Crawl
+from webCrawling import Crawl
 import os
 
 app = Flask(__name__)
@@ -27,7 +27,7 @@ ALLOWED_AUDIO = {'mp3', 'wav'}
 lc = LangChaing()
 # sr = SpeechRecognation()
 llm = LLMResponse()
-# c = Crawl()
+c = Crawl()
 
 @app.route('/')
 def home():
@@ -353,11 +353,11 @@ def submit_answer():
 #     except Exception as e:
 #         return jsonify({'error': str(e)}), 500
 
-# @app.route('/update_page', methods=['GET'])
-# def update_page():
-#     #Removing chat from the memory
-#     llm.chatbot = None
-#     return jsonify({'message': 'Update Page'})
+@app.route('/update_page', methods=['GET'])
+def update_page():
+    #Removing chat from the memory
+    llm.chatbot = None
+    return jsonify({'message': 'Update Page'})
  
 if __name__ == '__main__':
     app.run(debug=True, port=5555)

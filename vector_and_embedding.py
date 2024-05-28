@@ -11,9 +11,9 @@ from langchain_community.document_loaders import PyPDFLoader
 from langchain_community.document_loaders import WebBaseLoader
 
 # #Youtube
-# from langchain_community.document_loaders.generic import GenericLoader
-# from langchain_community.document_loaders.parsers.audio import OpenAIWhisperParser
-# from langchain_community.document_loaders import YoutubeAudioLoader
+from langchain_community.document_loaders.generic import GenericLoader
+from langchain_community.document_loaders.parsers.audio import OpenAIWhisperParser
+from langchain_community.document_loaders import YoutubeAudioLoader
 
 #Split document
 from langchain.text_splitter import RecursiveCharacterTextSplitter
@@ -45,14 +45,14 @@ class LangChaing:
         loader = WebBaseLoader(url)
         return loader.load()
 
-    # def __load_youtube(self, url:str):
+    def __load_youtube(self, url:str):
 
 
-    #     loader = GenericLoader(
-    #         YoutubeAudioLoader([url],persist_youtube_audio),
-    #         OpenAIWhisperParser()
-    #     )
-    #     return loader.load()
+        loader = GenericLoader(
+            YoutubeAudioLoader([url],persist_youtube_audio),
+            OpenAIWhisperParser()
+        )
+        return loader.load()
 
     def __split_content(self, docs):
 
