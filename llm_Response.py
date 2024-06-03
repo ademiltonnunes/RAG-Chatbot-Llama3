@@ -11,11 +11,17 @@ sys.path.append('../..')
 from langchain_community.embeddings import OllamaEmbeddings
 #Vectorstores
 from langchain_community.vectorstores import Chroma
-#ChatBot
-# # from langchain.vectorstores import DocArrayInMemorySearch
-from langchain.chains import ConversationalRetrievalChain
+# BufferMemory
 from langchain.memory import ConversationBufferMemory
+# Template
+from langchain.prompts import PromptTemplate, SystemMessagePromptTemplate, HumanMessagePromptTemplate, ChatPromptTemplate
+# LLM
 from langchain_community.llms import Ollama
+#ChatBot Retriever
+from langchain.chains import ConversationalRetrievalChain
+from langchain.chains import RetrievalQA
+
+
 
 # libraries imported for translation
 from deep_translator import GoogleTranslator, single_detection
@@ -33,6 +39,7 @@ class LLMResponse:
         self.language = None
         self.__db = None
         self.chatbot = None
+        self.chat_history = []
     
     def __get_chroma_vectorstore(self):
         # Load the Chroma object from the file
@@ -41,7 +48,7 @@ class LLMResponse:
 
         return vector_db
         
-    def __load_chatbot(self, k = 3, chain_type='stuff'):
+    def __load_chatbot(self, k = 3 , chain_type='stuff'):
         # Load the Chroma object from the file
         self.__db = self.__get_chroma_vectorstore()
        
@@ -50,24 +57,146 @@ class LLMResponse:
 
        # Create a ConversationBufferMemory
         memory = ConversationBufferMemory(
-        memory_key="chat_history",
-        return_messages=True  # Return chat history as a list of messages
+            memory_key="chat_history",
+            return_messages=True,  # Return chat history as a list of messages
+            input_key="question"
         )
 
+        # Define the system message template
+        system_template = """You are a knowledgeable chatbot for Customer Support for SFBU, which stands for San Francisco Bay University.
+        You are here to help with questions of the user. 
+        Your tone should be professional and informative, but not too wordy. For example, if you greated the user, don't great them again in the answer. Make responses shortest as possible.
+        If you cannot find the answer from the pieces of context, just say that you don't know, don't try to make up an answer.
+        Don't guess anything about the user, just answer their question.
+        ----------------
+        {context}"""
+
+        # Create the chat prompt templates
+        messages = [
+            SystemMessagePromptTemplate.from_template(system_template),
+            HumanMessagePromptTemplate.from_template("{question}")
+        ]
+        qa_prompt = ChatPromptTemplate.from_messages(messages)
+
+        # LLM
+        llm = Ollama(
+            base_url=url,
+            model=model
+        )
+ 
         #Create QA
         qa = ConversationalRetrievalChain.from_llm(
-            llm=Ollama(
-                base_url=url,
-                model=model
-                ),
+            llm=llm,
             chain_type=chain_type,
             retriever=retriever,
             return_source_documents=False,
             return_generated_question=False,
             memory=memory,
-            output_key='answer'  # Specify the desired output key
+            output_key='answer',
+            verbose=True,
+            combine_docs_chain_kwargs={"prompt": qa_prompt}
         )
+
         return qa
+
+    def __load_chatbot2(self, k = 6, chain_type='stuff'):
+        # Load the Chroma object from the file
+        self.__db = self.__get_chroma_vectorstore()
+        
+        #Retrieve db        
+        retriever = self.__db.as_retriever(search_type="similarity", search_kwargs={"k": k})
+
+
+
+        # Create Template
+        prompt_template = """You are a knowledgeable chatbot for Customer Support for SFBU, which stands for San Francisco Bay University.
+        You are here to help with questions of the user. 
+        Your tone should be professional and informative, but not too wordy. For example, if you greated the user, don't great them again in the answer. Make responses shortest as possible.
+        If you cannot find the answer from the pieces of context, just say that you don't know, don't try to make up an answer.
+        Don't guess anything about the user, just answer their question.
+        
+            Context: {context}
+            History: {history}
+
+            User: {question}
+            Chatbot:"""
+        
+        template = PromptTemplate(
+            input_variables=["history", "context", "question"],
+            template= prompt_template
+        )
+
+        # Create a ConversationBufferMemory
+        memory = ConversationBufferMemory(
+            memory_key="history",
+            return_messages=True,  # Return chat history as a list of messages
+            input_key="question"
+        )
+
+        self.chat_history = []
+
+        # LLM
+        llm = Ollama(
+            base_url=url,
+            model=model
+        )
+
+        #Create QA
+        qa = RetrievalQA.from_chain_type(
+            llm=llm,
+            chain_type=chain_type,
+            retriever=retriever,
+            verbose=True,
+            chain_type_kwargs={
+                "verbose": True,
+                "prompt": template,
+                "memory": memory
+            }
+        )
+
+        return qa
+    
+    def chat2(self, question, includeAudio):
+        try:
+
+            #Load chatbot
+            if self.chatbot == None:
+                self.chatbot = self.__load_chatbot() 
+
+            #saving original question
+            original_question = question
+
+            #detecting language if no audio question
+            if not includeAudio:
+                self.language = self.__detect_language_chatGPT(question)
+
+                #translate language to english if language isn't in English
+                if self.language != 'en':                    
+                    question = self.__translator(question, source_language= self.language, target_language='en')          
+
+            # Check for prompt injection and moderation before answing question
+            if self.__detect_prompt_injection(question):
+                answer = "Your request has been flagged as potential prompt injection and cannot be processed."
+            else:
+                #Submit question
+                user_message = {"role": "user", "message": question}
+                self.chat_history.append(user_message)
+                
+                response = self.chatbot({"query": question, "history": self.chat_history})
+                answer = response.get('result')
+                
+                chatbot_message = {"role": "assistant", "message": response['result']}
+                self.chat_history.append(chatbot_message)
+
+            #Translate response if not audio
+            if not includeAudio:
+                if self.language != 'en':                    
+                    answer = self.__translator(answer, source_language= 'en', target_language= self.language)
+
+            #Retrieve Answer
+            return {"question": original_question, "answer": answer}
+        except Exception as e:
+            return {"answer": f"An error occurred: {str(e)}"}      
 
     def chat(self, question, includeAudio):
         try:
@@ -92,7 +221,7 @@ class LLMResponse:
                 response =  {"answer": "Your request has been flagged as potential prompt injection and cannot be processed."}
             else:
                 #Submit question
-                response = self.chatbot({'question': question, 'chat_history': []})
+                response = self.chatbot({'question': question})
 
             #Translate response if not audio
             if not includeAudio:
@@ -121,7 +250,6 @@ class LLMResponse:
         response = ollama.chat(model=model, messages=messages)
         return response['message']['content']
 
-    
     ########################## PROMPT INJECTION ###########   
     def __detect_prompt_injection(self, question):
         try:
