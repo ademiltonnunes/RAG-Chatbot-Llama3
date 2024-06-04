@@ -1,0 +1,13 @@
+{
+  "type": "service_account",
+  "project_id": "illama3-project",
+  "private_key_id": "0c849c421b68ef1dd20ec734232891b458f2375f",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQDMgkXj5N0ruvx6\njlJMqP4NCVcruPlEd6aUtpboC/Zp7Rq1j+sj42fUKaqwNmrCTwHogb9f/NLqK5vs\nsPkUuffvWkI+mxgLHoQKaQJLbmP4Z3fxVwm2Hu9tgQPpow//4NGmO9uVXjd/WVP3\nx0XSBTmlJsS/MxlrCTDyGG+1QcnrqHQpC0/wmGSCaBui0aJIA9bLrH7J0uyhUj49\nYNXMIiFXvPqBA2vhwfOv0mvrIROa3+M9rtuVMCP3QxuwRlZ6K9fry+o1rDYn7bT9\nxS6EOG7BFrdQ5BdrukZftLiHWyaNiUnSnc5zzVh3m+4U3oOeLcYYtXTsbdMnVxfh\n6kWmPyArAgMBAAECggEAYZba1hSs7ATHHY6TvEw6KytlYxJaNK9qGPYGjgXDWSnR\ngImEWjRWpBob/wmAqWd9UB+2HI5vcVpNBkYvHhJeO2QVT33AG/I8bSFN/IPZhbyO\nMmbn1fXuKBGUNeXfqSl1sb9HmgADOKx+UrNPYJiouOQGp/yw6PBSYHyDtfmGawK1\npWoIhAN4dlyuz3tYyTnSk9QOlYNIuY5FDoC5LghZVFk0HBLR+ZUSYyJgIv141Jr9\ndsichdEqyihgedTFkcMNkAj+MmRtnGXqPnzn0WCoRDN9wgosJC6fKw0Udh3cL2+F\n2B6LvgQ0ZNLL9/XCdRZ+KxXrCQ2gfm2XVnWIN0ygNQKBgQDs99PZXhZO5QrPzST/\nyBs3TXQPa0MwBWJPPwq1a9JbcrobMe/OkOZeDI+iyqklZSq/lE/kWOUYoYpBUeT6\nR86vAky+pxFsxzK1iB9bx22Vnj5u5jO3ckceYNZWuGqcQP0W15tt8hXDZSoGLqU5\nYTcMwnwf/TXMMT+cW+1qnU6TpQKBgQDc7xHIyEfz7mtjAefAMGk1NwoSNbYKXA4R\nnxmbZjBWH5njogILD2dChFlW60WZ75bPaBR+FvbRunja397CiS+hr3E6TgaGS9kg\n+jAHzdGy1OSeiSH356XGTeamUGd/oFgtAf0WAb+NTa8w3aa+XBQc91EKhGV3Z9uf\nEN+4gzNbjwKBgDf53tA0+n4OerxVkEzffxZUNHtD8i4Qx4VCtgve+WTit/WemTAp\naFGFFBT3XHdZ63wv06N0IEHuPtNpPfalKbyLhYdvvZz9fQwGqKmsdUVniQX3WPYX\nh5c0ds0raPuaGm7f5XZWPi/W4NNvB1aDkVZxRpLj5GZkp8sOqAmMOTiFAoGBAMEa\n7I50D//zikUVazyek7aBjvnvnFddsqZQS496OBFuuZEvD14fbn/DMls4dLNhqI1M\nSW0UIVObCvsz5X5fbhSCRhNSE33aWcPrKYQIr5sBXXn8HoaSIGE9wbXoXS4+NhPQ\nwyczC/wzxEaP1ahYzvOqb1kj85P0YQ+dLg4WDxOdAoGAKDcV9BdU8wATUUrjTsAU\nKiBT8ptzpH/hMSkPi3Va+MWCTPcwB8gX0tggDwsCaRTt9jAer0kwrAUFcKrde3ns\nJMNbwr11k3mI5J3xaJX9WuzKGEnfk24II11LFGxQncsOE2Hz7S4laxhYeJtA4zkB\nZjA7mF0CDRqP2hOo7yfNe54=\n-----END PRIVATE KEY-----\n",
+  "client_email": "illama3-project@illama3-project.iam.gserviceaccount.com",
+  "client_id": "113613181617668467135",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/illama3-project%40illama3-project.iam.gserviceaccount.com",
+  "universe_domain": "googleapis.com"
+}

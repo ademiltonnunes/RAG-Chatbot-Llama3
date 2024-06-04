@@ -1,7 +1,7 @@
 from flask import Flask, render_template, request, jsonify, send_file
 from werkzeug.utils import secure_filename
 from vector_and_embedding import LangChaing
-# from speechRecognation import SpeechRecognation
+from speechRecognation import SpeechRecognation
 from llm_Response import LLMResponse
 from webCrawling import Crawl
 import os
@@ -25,7 +25,7 @@ ALLOWED_EXTENSIONS = {'pdf'}
 ALLOWED_AUDIO = {'mp3', 'wav'}
 
 lc = LangChaing()
-# sr = SpeechRecognation()
+sr = SpeechRecognation()
 llm = LLMResponse()
 c = Crawl()
 
@@ -293,65 +293,65 @@ def submit_answer():
         print(f"Unexpected Error: {e}")
         return jsonify({'error': f"Can't answer questions: {e}"})
 
-# @app.route('/upload-audio', methods=['POST'])
-# def upload_audio():
-#     try:
-#         audio_file = request.files.get('audio', None)
+@app.route('/upload-audio', methods=['POST'])
+def upload_audio():
+    try:
+        audio_file = request.files.get('audio', None)
 
-#         # Check if an audio file was received
-#         if audio_file is None:
-#             return jsonify({'error': 'No audio file received'}), 400
+        # Check if an audio file was received
+        if audio_file is None:
+            return jsonify({'error': 'No audio file received'}), 400
 
-#         # Check if the file has a valid extension
-#         if not allowed_audio_file(audio_file.filename):
-#             return jsonify({'error': 'Invalid audio file type'}), 400
+        # Check if the file has a valid extension
+        if not allowed_audio_file(audio_file.filename):
+            return jsonify({'error': 'Invalid audio file type'}), 400
 
-#         # Save audio file
-#         if not os.path.exists(app.config['AUDIO_FOLDER']):
-#             os.makedirs(app.config['AUDIO_FOLDER'])
+        # Save audio file
+        if not os.path.exists(app.config['AUDIO_FOLDER']):
+            os.makedirs(app.config['AUDIO_FOLDER'])
 
-#         audio_path = os.path.join(app.config['AUDIO_FOLDER'], 'audio.mp3')
-#         audio_file.save(audio_path)
+        audio_path = os.path.join(app.config['AUDIO_FOLDER'], 'audio.mp3')
+        audio_file.save(audio_path)
 
-#         #Change audio to text
-#         transciption = sr.transcribe_audio(audio_path)
+        #Change audio to text
+        transciption = sr.transcribe_audio(audio_path)
 
-#         return jsonify({'transcription': transciption})
-#     except Exception as e:
-#         return jsonify({'error': str(e)}), 500
+        return jsonify({'transcription': transciption})
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
 
-# def allowed_audio_file(filename):
-#     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_AUDIO
+def allowed_audio_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_AUDIO
 
-# @app.route('/get_question_audio', methods=['POST'])
-# def get_audio():
-#     try:
+@app.route('/get_question_audio', methods=['POST'])
+def get_audio():
+    try:
 
-#         data = request.get_json()
-#         # Get the audio text
-#         text = data.get('text')
+        data = request.get_json()
+        # Get the audio text
+        text = data.get('text')
 
-#         if text:
-#             # Changing Text to audio
-#             audio = sr.text_to_audio(text)
+        if text:
+            # Changing Text to audio
+            audio = sr.text_to_audio(text)
 
-#             # Create directory if it doesn't exist
-#             if not os.path.exists(app.config['REPLY_FOLDER']):
-#                 os.makedirs(app.config['REPLY_FOLDER'])
+            # Create directory if it doesn't exist
+            if not os.path.exists(app.config['REPLY_FOLDER']):
+                os.makedirs(app.config['REPLY_FOLDER'])
 
-#             # Audio Path
-#             audio_path = os.path.join(app.config['REPLY_FOLDER'], 'reply.mp3')
+            # Audio Path
+            audio_path = os.path.join(app.config['REPLY_FOLDER'], 'reply.mp3')
             
-#             # Save audio
-#             audio.save(audio_path)
+            # Save audio
+            audio.save(audio_path)
 
-#             # Return the audio file for download
-#             return send_file(audio_path, as_attachment=True)
-#         else:
-#             return jsonify({'error': 'No text provided to transform into audio'}), 400
+            # Return the audio file for download
+            return send_file(audio_path, as_attachment=True)
+        else:
+            return jsonify({'error': 'No text provided to transform into audio'}), 400
 
-#     except Exception as e:
-#         return jsonify({'error': str(e)}), 500
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
 
 @app.route('/update_page', methods=['GET'])
 def update_page():
