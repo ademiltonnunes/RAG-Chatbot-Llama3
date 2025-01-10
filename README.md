@@ -1,4 +1,4 @@
-# Chatbot From Files
+# RAG Chatbot From Files
 
 This project aims to implement a robust web application for a chatbot that interacts with your personal documents and data, providing responses through semantic search. All responses are specific to the loaded file; if a question is unrelated to the file, the chatbot will not respond. The project also includes a file upload feature that allows users to feed the system with information. It also includes advanced features such as translation, voice recognition, and enhanced user question techniques.
 
@@ -49,20 +49,13 @@ Follow these steps to set up your project with a virtual environment:
 1. If you don’t have Python installed, [install it from here](https://www.python.org/downloads/).
 
 2. Clone this repository.
-
-   ```bash
-   git clone https://github.com/ademiltonnunes/Generative-AI-Driven-Intelligent-Apps-Development.git
-
 3.  Navigate into the project directory
-      ```bash
-        cd custommer-support-system-llama3
-
-5. Create a new virtual environment:
+4. Create a new virtual environment:
 
    ```bash
    python -m venv venv
    ```
-6. Active the new virtual environment:
+5. Active the new virtual environment:
    - Linux:
     ```bash
       . venv/bin/activate
@@ -71,7 +64,7 @@ Follow these steps to set up your project with a virtual environment:
    ```bash
    .\venv\Scripts\Activate
     ```
-7. Install the requirements:
+6. Install the requirements:
 
    ```bash
    pip install -r requirements.txt
@@ -91,9 +84,9 @@ Follow these steps to set up your project with a virtual environment:
          ```
 
 
-8. Add your [API key](https://beta.openai.com/account/api-keys) to the `.env` file.
+7. Add your [API key](https://beta.openai.com/account/api-keys) to the `.env` file.
 
-9. Run the app:
+8. Run the app:
 
    ```bash
    flask run
